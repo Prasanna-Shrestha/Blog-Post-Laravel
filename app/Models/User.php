@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\UserRole;
+use Database\Factories\UserFactory;
+use Dom\Comment;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+// #[Fillable(['name', 'email', 'password'])]
+// #[Hidden(['password', 'remember_token'])]
+class User extends Authenticatable
+{
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable;
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+
+    protected $table = "users";
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        "username",
+        "email",
+        "password"
+    ];
+    protected $hidden = [
+        'password',
+    ];
+    public function posts(): HasMany {
+        return $this->hasMany(Post::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+    
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+    
+    public function statuses(): HasMany {
+        return $this->hasMany(Status::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            // 'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
