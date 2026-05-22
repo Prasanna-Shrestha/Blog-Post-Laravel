@@ -20,10 +20,9 @@ return new class extends Migration
                 PostStatus::accepted->value,
                 PostStatus::rejected->value,
             ]);
-            $table->integer('statusable_id');
-            $table->string('statusable_type');
+            $table->morphs('statusable');
             $table->foreignId('changed_by')->constrained('users', 'id');
-            $table->timestamps('created_at');
+            $table->timestamps();
         });
     }
 

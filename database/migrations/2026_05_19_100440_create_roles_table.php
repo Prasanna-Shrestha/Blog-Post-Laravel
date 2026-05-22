@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->enum('roles',[
+            $table->enum('name',[
                 UserRole::admin->value,
                 UserRole::user->value
-            ]);
+            ])->default(UserRole::user->value);
         });
     }
 

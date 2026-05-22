@@ -14,6 +14,7 @@ class Role extends Model
     protected $fillable = [
         "name"
     ];
+    public $timestamps = false;
 
     protected $casts = [
         'name' => UserRole::class,
