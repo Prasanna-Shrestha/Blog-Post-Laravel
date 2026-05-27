@@ -66,4 +66,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function hasPermission(string $permission): bool
+    {
+        return $this->roles
+            ->flatMap(fn ($role) => $role->permissions)
+            ->pluck('name')
+            ->contains($permission);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles->pluck('name')->contains($role);
+    }
+    public function isAdmin(): bool
+    {
+        return $this->roles()->where('name', 'admin')->exists();
+    }
 }

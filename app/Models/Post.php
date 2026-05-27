@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\PostStatus;
 use App\Models\Comment;
+use App\Models\Status;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -48,4 +49,5 @@ class Post extends Model
     {
         return $this->morphMany(Status::class, 'statusable');
     }
+    
 }

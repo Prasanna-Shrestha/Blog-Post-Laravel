@@ -83,6 +83,18 @@
         }
 
         .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-outline-accent {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline-accent:hover {
+            background: rgba(201,169,110,0.08);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-accent:active { transform: translateY(0); }
 
         /* ── Layout ──────────────────────────────────── */
         .container {
@@ -565,11 +577,19 @@
 </head>
 <body>
 
+@php
+    $isEdit = isset($post);
+@endphp
+
 {{-- ── Navigation ───────────────────────────────────────── --}}
 <nav>
     <a href="{{ route('home') }}" class="nav-brand">Forum</a>
     <div class="nav-right">
-        <span class="nav-user">Posting as <strong>{{ auth()->user()->username }}</strong></span>
+        @if(!$isEdit)
+            <span class="nav-user">Posting as <strong>{{ auth()->user()->username }}</strong></span>
+        @else
+            <span class="nav-user">Editing Post as <strong>{{ auth()->user()->username }}</strong></span>
+        @endif
         <form method="POST" action="{{ route('logout') }}" style="display:inline;">
             @csrf
             <button type="submit" class="nav-btn">
@@ -593,9 +613,8 @@
         </svg>
         All posts
     </a>
-
     <div class="page-header">
-        <h1>New post</h1>
+        <h1>{{ $isEdit ? 'Edit post' : 'New post' }}</h1>
         <p>Share your thoughts with the community.</p>
     </div>
 
@@ -613,12 +632,15 @@
 
     <div class="form-card">
         <form
-            method="POST"
-            action= "{{ route('store') }}"
+            action="{{ $isEdit ? route('update', $post) : route('store') }}"
+            method = "POST" 
             novalidate
             id="post-form"
         >
             @csrf
+            @if($isEdit)
+                @method('PUT')
+            @endif
 
             {{-- ── Title ──────────────────────────────────── --}}
             <div class="form-group">
@@ -627,7 +649,7 @@
                     type="text"
                     id="title"
                     name="title"
-                    value="{{ old('title') }}"
+                    value="{{ old('title', $post->title ?? '') }}"
                     placeholder="Give your post a clear, descriptive title"
                     maxlength="255"
                     class="{{ $errors->has('title') ? 'error' : '' }}"
@@ -647,46 +669,48 @@
             <div class="form-group">
                 <label>
                     Categories
-                    <span class="optional">(select existing or type to create new)</span>
+                    <span class="optional">
+                        @isset($post)
+                            (edit existing categories, comma separated)
+                        @else
+                            (select existing or type to create new)
+                        @endisset
+                    </span>
                 </label>
-                
 
                 <div class="tag-suggestions">
-                @if ($categories->isNotEmpty())
 
-                    {{-- Existing categories: select + type --}}
-                    <select name="categories[]" multiple>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}">
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-
+                @isset($post)
+                    {{-- EDIT: single editable text field pre-filled with post's categories --}}
                     <input
                         type="text"
-                        name="new_categories"
-                        id="cat-input"
+                        name="categories"
                         class="tag-text-input"
-                        placeholder="Or type a new category…"
+                        value="{{ $post->categories->pluck('name')->implode(', ') }}"
+                        placeholder="Edit categories (comma separated)…"
                     >
 
                 @else
+                    {{-- CREATE: select existing + text for new ones --}}
+                    @if ($categories->isNotEmpty())
+                        <select name="categories[]" multiple>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    @endif
 
-                    {{-- No categories: only typing --}}
                     <input
                         type="text"
                         name="new_categories"
-                        id="cat-input"
                         class="tag-text-input"
-                        placeholder="Type categories (comma separated)…"
+                        placeholder="{{ $categories->isNotEmpty() ? 'Or type new categories (comma separated)…' : 'Type categories (comma separated)…' }}"
                     >
 
-                @endif
-                    </div>
+                @endisset
+
                 </div>
             </div>
-
             <div class="section-divider"></div>
 
             {{-- ── Body ───────────────────────────────────── --}}
@@ -700,48 +724,73 @@
                     class="{{ $errors->has('body') ? 'error' : '' }}"
                     oninput="syncBody(this); countChars(this, 'body-count', 20000)"
                     required
-                >{{ old('body') }}</textarea>
+                >{{ old('body', $post->body ?? '') }}</textarea>
                 <div class="field-footer">
                     @error('body')
                         <span class="field-error">{{ $message }}</span>
                     @enderror
                     <span class="char-count" id="body-count">0 / 20000</span>
                 </div>
-
-                {{-- Live preview toggle --}}
-                <button type="button" class="toggle-preview-btn" onclick="togglePreview()" id="preview-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    Show preview
-                </button>
             </div>
 
-            {{-- Preview panel --}}
-            <div class="preview-panel" id="preview-panel">
-                <div class="preview-title" id="preview-title">—</div>
-                <div class="preview-body"  id="preview-body">
-                    <span class="preview-empty">Your content will appear here…</span>
-                </div>
-            </div>
+
 
             {{-- ── Action bar ──────────────────────────────── --}}
+            {{-- Hidden field — JS sets this to 'draft' or 'submitted' --}}
+        <input type="hidden" name="action" id="form-action" value="draft">
+
             <div class="action-bar">
-                <a href="{{ route('home') }}" class="btn btn-ghost">Cancel</a>
-                <button type="submit" class="btn btn-primary" id="submit-btn">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"/>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                    </svg>
-                    Publish post
-                </button>
+            <a href="{{ route('home') }}" class="btn btn-ghost">Cancel</a>
+            
+            @if(!$isEdit)
+            <button
+                type="submit"
+                name = "draft"
+                class="btn btn-outline-accent"
+                id="btn-draft"
+                onclick="setAction('draft')"
+            >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                Save as draft
+            </button>
+            @endif
+
+            <button
+                type="submit"
+                name="submitted"
+                class="btn btn-primary"
+                id="btn-submit"
+                onclick="setAction('submitted')"
+            >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+                {{ $isEdit ? 'Edit' : 'Submit for review' }}
+            </button>
             </div>
 
         </form>
     </div>
 </div>
-
-
 </body>
+<script>
+    function setAction(value) {
+        document.getElementById('form-action').value = value;
+        setTimeout(() => {
+            document.getElementById('btn-draft').disabled  = true;
+            document.getElementById('btn-submit').disabled = true;
+            document.getElementById('btn-draft').textContent  = value === 'draft' ? 'Saving…' : 'Save as draft';
+            document.getElementById('btn-submit').textContent = value === 'submitted' ? 'Submitting…' : 'Submit for review';
+        }, 0);
+    }
+
+    document.getElementById('post-form').addEventListener('submit', function () {
+        const btn = document.getElementById('submit-btn'); 
+    });
+</script>
 </html>

@@ -44,7 +44,6 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .nav-brand {
             font-family: 'DM Serif Display', serif;
             font-size: 1.25rem;
@@ -287,6 +286,7 @@
             opacity: 0.3;
             cursor: not-allowed;
         }
+        
     </style>
 </head>
 <body>
@@ -296,11 +296,9 @@
     <a href="{{ route('home') }}" class="nav-brand">Forum</a>
     <div class="nav-right">
         @auth
-            <button type="submit" class="nav-btn">
-                <a href="{{ route('create') }}">
+            <a href="{{ route('create') }}" class="nav-btn">
                 Create
-                </a>
-            </button>
+            </a>
             <span class="nav-user">Signed in as <strong>{{ auth()->user()->username }}</strong></span>
             <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                 @csrf
@@ -311,7 +309,7 @@
                     Sign out
                 </button>
             </form>
-            <a href="{{ route('login') }}" class="nav-user">
+            <a href="{{ route('profile') }}" class="nav-user">
                 {{ auth()->user()->username }} Profile</a>
         @else
             <a href="{{ route('login') }}" class="nav-btn">Sign in</a>
@@ -334,68 +332,119 @@
             <p>No posts yet. Be the first to write one.</p>
         </div>
     @else
-        <div class="post-list">
-            @foreach ($posts as $post)
-                <a class="post-card" href="{{ route('show', $post->id) }}">
+<div class="post-list">
+@foreach ($posts as $post)
 
-                    <div class="post-card-top">
-                        {{-- Left: title + categories --}}
-                        <div class="post-left">
-                            <div class="post-title">{{ $post->title }}</div>
-                            <div class="category-list">
-                                @forelse ($post->categories as $cat)
-                                    <span class="category-tag">{{ $cat->name }}</span>
-                                @empty
-                                    <span class="category-tag" style="color:var(--muted);">Uncategorized</span>
-                                @endforelse
-                            </div>
-                        </div>
+@can('view', $post)
 
-                        {{-- Right: author + time --}}
-                        <div class="post-right">
-                            <div class="post-author">{{ $post->user->username }}</div>
-                            <div class="post-time">{{ $post->created_at->diffForHumans() }}</div>
-                            @if ($post->user->id == Auth::id() or $user->roles->contains('name', 'admin'))
-                            <div class="category-tag">
-                                <form action="{{ route('home') }}"method="get">
-                                    <button>Edit</button>
-                                </form>
-                            </div>
-                            <div class="category-tag">
-                                <form action="{{route('login')}} method = "get">
-                                    <button>Delete</button>
-                                </form>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                    <div>
-                        <div>{{ $post->body }}</div>
-                    </div>
+<a class="post-card" href="{{ route('show', $post->id) }}">
 
-                    {{-- Bottom: comment count --}}
-                    <div class="post-card-bottom">
-                        <svg class="comment-count-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-                        </svg>
-                        <span class="comment-count">
-                            <strong>{{ $post->comments_count }}</strong>
-                            {{ Str::plural('comment', $post->comments_count) }}
-                        </span>
-                    </div>
+    <div class="post-card-top">
 
-                </a>
-            @endforeach
+        {{-- Left --}}
+        <div class="post-left">
+            <div class="post-title">{{ $post->title }}</div>
+
+            <div class="category-list">
+                @forelse ($post->categories as $cat)
+                    <span class="category-tag">{{ $cat->name }}</span>
+                @empty
+                    <span class="category-tag" style="color:var(--muted);">
+                        Uncategorized
+                    </span>
+                @endforelse
+            </div>
+        </div>
+
+        {{-- Right --}}
+        <div class="post-right">
+
+            <div class="post-author">
+                {{ $post->user->username }}
+            </div>
+
+            <div class="post-time">
+                {{ $post->created_at->diffForHumans() }}
+            </div>
+
+            {{-- Actions --}}
+            @can('update', $post)
+                <form action="{{ route('edit', $post) }}" method="get">
+                    <button type="submit">Edit</button>
+                </form>
+            @endcan
+
+            @can('delete', $post)
+                <form action="{{ route('delete', $post->id) }}" method="POST">
+                    @csrf
+                    @method('delete')
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?')">
+                        Delete
+                    </button>    
+                </form>
+            @endcan
+
+        </div>
+
+    </div>
+
+    {{-- Body --}}
+    <div>
+        <div>{{ $post->body }}</div>
+    </div>
+
+    {{-- Comments --}}
+    <div class="post-card-bottom">
+        <svg class="comment-count-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+
+        <span class="comment-count">
+            <strong>{{ $post->comments_count }}</strong>
+            {{ Str::plural('comment', $post->comments_count) }}
+        </span>
+    </div>
+
+    {{-- Admin actions --}}
+    @if (auth()->check())
+        <div class="post-right">
+
+            @can('publish', $post)
+                <form action="{{ route('publish', $post) }}" method="post">
+                    @csrf
+                    @method('PATCH')
+                    <input type="hidden" name="status" value="accepted">
+                    <button type="submit">Publish Post</button>
+                </form> 
+            @endcan
+
+            @can('reject', $post)
+                <form action="{{ route('reject', $post) }}" method="post">
+                    @csrf
+                    @method('patch')
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit">Reject Post</button>
+                </form>
+            @endcan
+
+        </div>
+    @endif
+
+</a>
+
+@endcan
+
+@endforeach
             {{-- Pagination --}}
             @if ($posts->hasPages())
                 <div class="pagination-wrap">
                     {{ $posts->links('vendor.pagination.custom') }}
                 </div>
-            @endif
-        </div>
+            @endif    
 
 
     @endif
+    
 </div>
 
 </body>

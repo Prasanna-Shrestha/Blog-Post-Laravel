@@ -1,0 +1,112 @@
+[90m= [39m[34;4mApp\Models\User[39;24m {#7968
+    [34mid[39m: [35m1[39m,
+    [34musername[39m: [32m"[39m[32mPop[39m[32m"[39m,
+    [34memail[39m: [32m"[39m[32mpop@gmail.com[39m[32m"[39m,
+    #[33mpassword[39m: [32m"[39m\$[32m2y[39m\$[32m12[39m\$[32m4akcIxx37ZQdJBfXmBnZpeeuOHNS5LmcGh73JKhQq5cy4lOV9CDP2[39m[32m"[39m,
+    [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:50:06[39m[32m"[39m,
+    [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:50:06[39m[32m"[39m,
+    [34mroles[39m: [34;4mIlluminate\Database\Eloquent\Collection[39;24m {#7962
+      [34mall[39m: [
+        [34;4mApp\Models\Role[39;24m {#7957
+          [34mid[39m: [35m1[39m,
+          [34mname[39m: [32m"[39m[32madmin[39m[32m"[39m,
+          [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7963
+            [34muser_id[39m: [35m1[39m,
+            [34mrole_id[39m: [35m1[39m,
+          },
+          [34mpermissions[39m: [34;4mIlluminate\Database\Eloquent\Collection[39;24m {#7946
+            [34mall[39m: [
+              [34;4mApp\Models\Permission[39;24m {#7942
+                [34mid[39m: [35m1[39m,
+                [34mname[39m: [32m"[39m[32mcreate-post[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mCreate Post[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7944
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m1[39m,
+                },
+              },
+              [34;4mApp\Models\Permission[39;24m {#7943
+                [34mid[39m: [35m2[39m,
+                [34mname[39m: [32m"[39m[32medit-own-post[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mEdit Own Post[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7945
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m2[39m,
+                },
+              },
+              [34;4mApp\Models\Permission[39;24m {#7940
+                [34mid[39m: [35m3[39m,
+                [34mname[39m: [32m"[39m[32medit-any-post[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mEdit Any Post[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7947
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m3[39m,
+                },
+              },
+              [34;4mApp\Models\Permission[39;24m {#7939
+                [34mid[39m: [35m4[39m,
+                [34mname[39m: [32m"[39m[32mdelete-own-post[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mDelete Own Post[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7950
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m4[39m,
+                },
+              },
+              [34;4mApp\Models\Permission[39;24m {#7938
+                [34mid[39m: [35m5[39m,
+                [34mname[39m: [32m"[39m[32mdelete-any-post[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mDelete Any Post[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7948
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m5[39m,
+                },
+              },
+              [34;4mApp\Models\Permission[39;24m {#7937
+                [34mid[39m: [35m6[39m,
+                [34mname[39m: [32m"[39m[32madd-comment[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mAdd Comment[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7953
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m6[39m,
+                },
+              },
+              [34;4mApp\Models\Permission[39;24m {#7936
+                [34mid[39m: [35m7[39m,
+                [34mname[39m: [32m"[39m[32mview-profile[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mView Own Profile[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7954
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m7[39m,
+                },
+              },
+              [34;4mApp\Models\Permission[39;24m {#7935
+                [34mid[39m: [35m8[39m,
+                [34mname[39m: [32m"[39m[32mmanage-permissions[39m[32m"[39m,
+                [34mlabel[39m: [32m"[39m[32mManage Permissions[39m[32m"[39m,
+                [34mcreated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mupdated_at[39m: [32m"[39m[32m2026-05-26 05:48:23[39m[32m"[39m,
+                [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#7955
+                  [34mrole_id[39m: [35m1[39m,
+                  [34mpermission_id[39m: [35m8[39m,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  }
