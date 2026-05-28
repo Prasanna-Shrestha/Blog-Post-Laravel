@@ -4,17 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
-use App\Models\User;
 use App\Models\Category;
 use App\Models\Comment;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Override;
 use Illuminate\Support\Str;
 use App\PostStatus;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PostController extends Controller
 {
@@ -37,6 +33,14 @@ class PostController extends Controller
     }
 
     public function store(Request $request){
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'body'  => 'required|string',
+            'action' => 'required|in:draft,submitted',
+            'categories' => 'nullable|array',
+            'categories.*' => 'integer|exists:categories,id',
+            'new_categories' => 'nullable|string|max:255',
+        ]);
         $id = Auth::id();
         $status = $request['action'] === 'submitted'
         ? PostStatus::submitted
@@ -92,7 +96,7 @@ class PostController extends Controller
                         ->with('success', 'Post published.');
     }
 
-    public function show(Request $request, $id){
+    public function show($id){
         $post = Post::with(['user', 'categories', 'comments.user'])
             ->findOrFail($id);    
         return view('show', compact('post'));
@@ -100,6 +104,9 @@ class PostController extends Controller
 
     public function comment(Request $request, $id){
         Gate::authorize('add-comment');
+        $request->validate([
+            'body' => 'required|string|max:500'
+        ]);
 
         $comment = Comment::create([
             "body" => $request->body,
@@ -110,7 +117,10 @@ class PostController extends Controller
     }
 
     public function profile(Request $request)
-    {
+    {   
+        $request->validate([
+            'tab' => 'nullable|in:draft,pending,accepted,rejected',
+        ]);
         $user = Auth::user();
         $tab  = $request->get('tab', 'draft');
 
@@ -141,10 +151,8 @@ class PostController extends Controller
         return view('profile', compact('user', 'posts', 'counts'));
     }
 
-    public function edit(Request $request, Post $post)
+    public function edit(Post $post)
     {
-        // $post = Post::findOrFail();
-
         // Must have edit-any OR (edit-own AND it's their post)
         if (!Gate::allows('edit-any-post')) {
             if (!Gate::allows('edit-own-post') || $post->user_id !== Auth::id()) {

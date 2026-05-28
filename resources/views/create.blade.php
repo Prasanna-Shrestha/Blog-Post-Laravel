@@ -598,18 +598,6 @@
         <p>Share your thoughts with the community.</p>
     </div>
 
-    {{-- Global validation error summary --}}
-    @if ($errors->any())
-        <div class="alert-error">
-            <span>⚠</span>
-            <ul style="list-style:none;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <div class="form-card">
         <form
             action="{{ $isEdit ? route('update', $post) : route('store') }}"

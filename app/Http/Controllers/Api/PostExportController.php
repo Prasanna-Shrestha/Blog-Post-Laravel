@@ -14,21 +14,8 @@ class PostExportController extends Controller
             ->withCount('comments')
             ->where('current_status', 'accepted')
             ->latest()
-            ->paginate(10);
+            ->paginate(8);
 
         return PostResource::collection($posts);
-    }
-    public function show(Post $post)
-    {
-        $post->load([
-            'user',
-            'categories'
-        ])->loadCount('comments');
-
-        if ($post->current_status !== 'accepted') {
-            abort(403);
-        }
-
-        return new PostResource($post);
     }
 }
