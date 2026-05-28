@@ -448,24 +448,7 @@
 <body>
 
 {{-- ── Navigation ──────────────────────────────────────── --}}
-<nav>
-    <a href="{{ route('home') }}" class="nav-brand">Forum</a>
-    <div class="nav-right">
-        @can('admin')
-            <a href="{{ route('admin.posts.index') }}" class="nav-btn">Admin queue</a>
-        @endcan
-        <a href="{{ route('create') }}" class="nav-btn nav-btn-accent">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            New post
-        </a>
-        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-            @csrf
-            <button type="submit" class="nav-btn">Sign out</button>
-        </form>
-    </div>
-</nav>
+<x-navbar />
 
 <div class="container">
 
@@ -487,6 +470,13 @@
                     </span>
                 @endforeach
             </div>
+            <br>
+            <a href="{{ route('create') }}" class="nav-btn nav-btn-accent">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                New post
+            </a>
         </div>
 
         <div class="profile-meta">

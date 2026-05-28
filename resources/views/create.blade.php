@@ -582,27 +582,7 @@
 @endphp
 
 {{-- ── Navigation ───────────────────────────────────────── --}}
-<nav>
-    <a href="{{ route('home') }}" class="nav-brand">Forum</a>
-    <div class="nav-right">
-        @if(!$isEdit)
-            <span class="nav-user">Posting as <strong>{{ auth()->user()->username }}</strong></span>
-        @else
-            <span class="nav-user">Editing Post as <strong>{{ auth()->user()->username }}</strong></span>
-        @endif
-        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
-            @csrf
-            <button type="submit" class="nav-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                </svg>
-                Sign out
-            </button>
-        </form>
-    </div>
-</nav>
+<x-navbar />
 
 {{-- ── Main ─────────────────────────────────────────────── --}}
 <div class="container">
