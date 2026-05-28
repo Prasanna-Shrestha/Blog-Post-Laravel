@@ -3,6 +3,7 @@
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PostExportController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -64,4 +65,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware('can:manage-permissions')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/permissions',         [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('permissions.index');
     Route::post('/permissions/{role}', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('permissions.update');
+});
+
+Route::apiResource('posts', PostExportController::class)
+    ->only(['index', 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::apiResource('posts', PostExportController::class)
+        ->except(['index', 'show']);
 });

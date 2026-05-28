@@ -20,14 +20,14 @@ class PostSeeder extends Seeder
 
         foreach($users as $user){
             $post1 = Post::create([
-                'title'=>'Blog Test',
+                'title'=>"Blog Test: { $user->id }",
                 'slug'=>'blog-test',
                 'body'=>"This first post has been created from seeder by user : {$user->username}",
                 'user_id'=>$user->id
             ]);
 
             $post2 = Post::create([
-                'title'=>'Blog Test',
+                'title'=>"Blog Test { $user->id }",
                 'slug'=>'blog-test',
                 'body'=>"This second post has been created from seeder by user : {$user->username}",
                 'user_id'=>$user->id

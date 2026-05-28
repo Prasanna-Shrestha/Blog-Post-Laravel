@@ -34,7 +34,7 @@ class PostPolicy
             return true;
         }
 
-        return $post->current_status === 'accepted';
+        return $post->current_status->value === 'accepted';
     }
 
     public function update(User $user, Post $post): bool
@@ -66,9 +66,5 @@ class PostPolicy
             return false;
         }
         return true;
-    }
-    public function viewAny(): bool
-    {
-        return true; // or role-based restriction
     }
 }

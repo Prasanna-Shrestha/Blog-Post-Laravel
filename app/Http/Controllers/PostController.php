@@ -19,9 +19,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class PostController extends Controller
 {
     public function index()
-    {
-        $this->authorize('viewAny', Post::class);
-        
+    {        
         $posts = Post::with(['user.roles', 'categories'])
             ->withCount('comments')
             ->latest()
@@ -70,7 +68,7 @@ class PostController extends Controller
             "slug" => "",
             "body" => $request->body,
             "user_id" => $id,
-            "current_status" => \App\PostStatus::draft->value,
+            "current_status" => $status,
         ]);
 
         $slug = Str::slug($request->title) . '-' . $post->id;
@@ -237,6 +235,7 @@ class PostController extends Controller
             'status' => $validated['status'],
             'changed_by' => Auth::id()
         ]);
+        $post->update(['current_status' => $validated['status']]);
         return redirect()->back()->with('success', 'Status updated successfully!');
     }
         
@@ -262,6 +261,7 @@ class PostController extends Controller
             'status' => $validated['status'],
             'changed_by' => Auth::id()
         ]);
+        $post->update(['current_status' => "rejected"]);
 
         return redirect()->back()->with('success', 'Status updated successfully!');
     }
