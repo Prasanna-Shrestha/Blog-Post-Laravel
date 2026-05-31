@@ -47,6 +47,8 @@ Route::get('/show/{id}', [PostController::class, 'show'])->name('show');
 Route::post('/register', [AuthController::class, 'registerUser'])->name('registerUser');
 Route::post('/login', [AuthController::class, 'loginUser'])->name('loginUser');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/forgotpassword', [AuthController::class, 'forgotpw'])->name('forgotpw');
+Route::post('/resetpw', [AuthController::class, 'resetpw'])->name('resetpw');
 
 
 Route::middleware('auth')->group(function () {

@@ -73,4 +73,38 @@ class AuthController extends Controller
         Auth::logout();
         return redirect()->route('register');
     }
+
+    public function forgotpw(){
+        return view('forgotpw');
+    }
+    public function searchid(Request $request){
+        $request->validate([
+            "login" => 'required|max:50'
+        ]);
+        $user = User::where("username", $request->login)->get();
+        if ($user->isNotEmpty()){
+            return view('changepw', compact('user'));
+        }
+        else{
+            return back()
+                ->withErrors([
+                    'login' => 'No account found with that username or email.'
+                ])
+                ->withInput();
+        }
+    }
+
+    public function resetpw(Request $request){
+        $request->validate([
+            "login" => 'required|max:50',
+            'password'=> 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z]).+$/|confirmed'
+        ]);
+        $user = User::where('username', $request->login)->first();
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('login')
+            ->with('status', 'Password updated successfully. Please login.');
+    }
 }

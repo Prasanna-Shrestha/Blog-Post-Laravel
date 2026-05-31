@@ -264,17 +264,16 @@
 
 <div class="card">
     <div class="brand">Forum</div>
-    <h1>Welcome back</h1>
-    <p class="subtitle">Sign in to continue your conversations.</p>
+    <h1>Change Password</h1>
 
     @if (session('status'))
         <div class="alert-success">{{ session('status') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('login') }}" novalidate>
+    <form method="POST" action="{{ route('resetpw') }}" novalidate>
         @csrf
 
-        {{-- Login identifier: username or email --}}
+        {{-- Id identifier: username or email --}}
         <div class="form-group">
             <label for="login">Username or Email</label>
             <input
@@ -294,66 +293,85 @@
             @error('invalid_cred')
                 <div class="field-error">{{ $message }}</div>
             @enderror
-        </div>
-
-        {{-- Password --}}
-        <div class="form-group">
-            <div class="row-between">
-                <label for="password">Password</label>
-                <a href="{{ route('forgotpw') }}" class="forgot-link">Forgot password?</a>
-            </div>
+            <label for="password_confirmation">Password</label>
             <div class="password-wrap">
                 <input
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="Your password"
+                    placeholder="Create strong password"
                     autocomplete="current-password"
                     class="{{ $errors->has('password') ? 'error' : '' }}"
                     required
                 >
-                <button type="button" class="toggle-pw" onclick="togglePw(this)" aria-label="Show password">
+                <button type="button" class="toggle-pw" onclick="togglePw('password', this)" aria-label="Show password">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                         <circle cx="12" cy="12" r="3"/>
                     </svg>
                 </button>
+                @error('password')
+                    <div class="field-error">{{ $message }}</div>
+                @enderror
+                
+                @error('invalid_cred')
+                    <div class="field-error">{{ $message }}</div>
+                @enderror
             </div>
-            @error('password')
-                <div class="field-error">{{ $message }}</div>
-            @enderror
-            
-            @error('invalid_cred')
-                <div class="field-error">{{ $message }}</div>
-            @enderror
+            <br>
+            <label for="password_confirmation">Confirm password</label>
+            <div class="password-wrap">
+                <input
+                    type="password"
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    placeholder="Repeat your password"
+                    autocomplete="new-password"
+                    class="{{ $errors->has('password_confirmation') ? 'error' : '' }}"
+                    required
+                >
+                <button type="button" class="toggle-pw" onclick="togglePw('password_confirmation', this)" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+                @error('password_confirmation')
+                    <div class="field-error">{{ $message }}</div>
+                @enderror
+            </div>
         </div>
-
-        {{-- Remember me --}}
-        <div class="remember-row">
-            <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-            <label for="remember">Remember me for 30 days</label>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" class="btn btn-primary">Change Password</button>
     </form>
 
-    <div class="divider"><span>New here?</span></div>
+    <div class="divider"><span>Remember your password?</span></div>
 
     <div class="link-row">
-        <a href="{{ route('register') }}">Create a free account →</a>
+        <a href="{{ route('login') }}">Sign in to your account →</a>
     </div>
 </div>
-
 <script>
-    function togglePw(btn) {
-        const input = document.getElementById('password');
+    function togglePw(fieldId, btn) {
+        const input = document.getElementById(fieldId);
         const isText = input.type === 'text';
         input.type = isText ? 'password' : 'text';
         btn.querySelector('svg').innerHTML = isText
             ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
             : '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
     }
-</script>
 
+    function checkStrength(val) {
+        const bar = document.getElementById('strength-bar');
+        let score = 0;
+        if (val.length >= 8) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[a-z]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+        bar.className = 'strength-bar';
+        if (val.length === 0) return;
+        const levels = ['', 'weak', 'fair', 'good', 'strong'];
+        bar.classList.add(levels[score] || 'weak');
+    }
+</script>
 </body>
 </html>

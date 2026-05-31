@@ -621,16 +621,12 @@
                     placeholder="Give your post a clear, descriptive title"
                     maxlength="255"
                     class="{{ $errors->has('title') ? 'error' : '' }}"
-                    oninput="syncTitle(this); countChars(this, 'title-count', 255)"
                     required
                     autofocus
                 >
-                <div class="field-footer">
-                    @error('title')
-                        <span class="field-error">{{ $message }}</span>
-                    @enderror
-                    <span class="char-count" id="title-count">0 / 255</span>
-                </div>
+                @error('title')
+                    <div class="field-error">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- ── Categories ──────────────────────────────── --}}
@@ -690,15 +686,11 @@
                     placeholder="Write your post here…"
                     maxlength="20000"
                     class="{{ $errors->has('body') ? 'error' : '' }}"
-                    oninput="syncBody(this); countChars(this, 'body-count', 20000)"
                     required
                 >{{ old('body', $post->body ?? '') }}</textarea>
-                <div class="field-footer">
-                    @error('body')
-                        <span class="field-error">{{ $message }}</span>
-                    @enderror
-                    <span class="char-count" id="body-count">0 / 20000</span>
-                </div>
+                @error('body')
+                    <div class="field-error">{{ $message }}</div>
+                @enderror
             </div>
 
 

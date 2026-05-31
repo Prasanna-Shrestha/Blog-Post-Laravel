@@ -12,6 +12,8 @@ use App\PostStatus;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 
+use function Laravel\Prompts\error;
+
 class PostController extends Controller
 {
     public function index()
@@ -28,14 +30,13 @@ class PostController extends Controller
         $this->authorize('create', Post::class);
         Gate::authorize('create-post');
         $categories = Category::all();
-        // $this->authorize('create', Post);
         return view('create', compact('categories'));
     }
 
     public function store(Request $request){
         $request->validate([
-            'title' => 'required|string|max:255',
-            'body'  => 'required|string',
+            'title' => 'required|string|max:50',
+            'body'  => 'required|string|max:500',
             'action' => 'required|in:draft,submitted',
             'categories' => 'nullable|array',
             'categories.*' => 'integer|exists:categories,id',
@@ -61,7 +62,7 @@ class PostController extends Controller
             $newIds = $newNames->map(
                 fn ($name) => Category::firstOrCreate([
                     'name' => $name,
-                    'slug' => "slug"    
+                    'slug' => $name    
                 ])->id
             );
 
