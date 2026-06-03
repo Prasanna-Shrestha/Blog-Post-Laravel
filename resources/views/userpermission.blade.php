@@ -586,44 +586,22 @@
 {{-- Navigation --}}
 <x-navbar />
 
-{{-- Main --}}
 <div class="container">
     <div class="page-header">
-        <h1 class="page-title">Manage User</h1>
+        <h1 class="page-title">User Permissions</h1>
     </div>
 
-    
-@if (session('status'))
-    <div class="alert-success">{{ session('status') }}</div>
-@endif   
-
-{{-- User table --}}
 <div class="user-table-wrap">
-    @if ($users->isEmpty())
-        <div class="table-empty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            <p>No users found.</p>
-        </div>
-    @else
-        <table class="user-table">
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Roles</th>
-                    <th>Status</th>
-                    <th>Joined Date</th>
-                    <th class="right">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
-                    @php $isSelf = auth()->id() === $user->id; @endphp
-                    <tr class="{{ $isSelf ? 'self-row' : '' }}">
-                        {{-- Identity --}}
+<table class="user-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach($users as $user)
+        <tr class="self-row">
                         <td>
                             <div class="user-identity">
                                 <div class="user-avatar {{ $user->is_active ? '' : 'inactive-avatar' }}">
@@ -635,77 +613,23 @@
                                 </div>
                             </div>
                         </td>
- 
-                        {{-- Roles --}}
-                        <td>
-                            <div class="role-pills">
-                                @forelse ($user->roles as $role)
-                                    <span class="role-pill {{ $role->name->value === 'admin' ? 'admin' : '' }}">
-                                        {{ $role->name->value }}
-                                    </span>
-                                @empty
-                                    <span class="role-pill">—</span>
-                                @endforelse
-                            </div>
-                        </td>
-                        {{-- Status --}}
-                        <td>    
-                            @if ($user->is_active)
-                                <span class="user-status status-active">
-                                    <span class="dot"></span> Active
-                                </span>
-                            @else
-                                <span class="user-status status-inactive">
-                                    <span class="dot"></span> Inactive
-                                </span>
-                        @endif
-                        </td>
- 
-                        {{-- Joined date --}}
-                        <td>
-                            <span class="joined-date">{{ $user->created_at->format('M j, Y') }}</span>
-                        </td>
- 
-                        {{-- Toggle action --}}
-                        <td class="right">
-                            @if ($isSelf)
-                                <span class="self-label">Your Own Account</span>
-                            @else
-                                <form
-                                    method="POST"
-                                    action="{{ route('users.toggle', $user) }}"
-                                    class="toggle-form"
-                                    onsubmit="return confirm(
-                                        '{{ $user->is_active
-                                            ? 'Deactivate ' . $user->username . '? They won\'t be able to log in.'
-                                            : 'Activate ' . $user->username . '? They will regain access.' }}'
-                                    )"
-                                >
-                                    @csrf
-                                    @method('PATCH')
-                                    <button
-                                        type="submit"
-                                        class="toggle-btn {{ $user->is_active ? 'deactivate' : 'activate' }}"
-                                    >
-                                        {{ $user->is_active ? 'Deactivate' : 'Activate' }}
-                                    </button>
-                                </form>
-                            @endif
-                        </td>
- 
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-     @endif
+
+            <td>
+                <a href="{{ route('admin.users.permissions.edit', $user) }}" class="toggle-btn">
+                    Manage Permissions
+                </a>
+            </td>
+
+        </tr>
+
+    @endforeach
+
+    </tbody>
+</table>
 </div>
 </div>
 
-@if($users->hasPages())
-    <div class="pagination-wrap">
-        {{ $users->links('vendor.pagination.custom') }}
-    </div>
-@endif
+
 </body>
 </html>
 

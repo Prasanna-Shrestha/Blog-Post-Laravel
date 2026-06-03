@@ -12,11 +12,10 @@ class AppServiceProvider extends ServiceProvider
         try {
             Permission::with('roles')->get()->each(function ($permission) {
                 Gate::define($permission->name, function ($user) use ($permission) {
-                    if (!$user->relationLoaded('roles')) {
-                        $user->load('roles.permissions');
-                    } elseif ($user->roles->isNotEmpty() && !$user->roles->first()->relationLoaded('permissions')) {
-                        $user->load('roles.permissions');
-                    }
+                    $user->loadMissing([
+                        'roles.permissions',
+                        'permissions',
+                    ]);
                     return $user->hasPermission($permission->name);
                 });
             });

@@ -456,7 +456,7 @@
                 </div>
             @endif
 
-            <form action = " {{ route('comment', $post->id) }} " method="POST" novalidate>
+            <form action = " {{ route('posts.comment', $post->id) }} " method="POST" novalidate>
                 @csrf
                 <textarea
                     name="body"

@@ -39,7 +39,6 @@ use App\Models\UserIsActive;
 //     Route::post('/permissions/{role}', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('permissions.update');
 
 
-
 Route::get('/', [PostController::class, 'index'])->name('home');
 
 
@@ -66,10 +65,10 @@ Route::get('lifecycle-test', function(){
 Route::middleware('auth')->group(function () {
     Route::get('/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/store', [PostController::class, 'store'])->name('posts.store');
-    Route::post('/comment/{id}', [PostController::class, 'comment'])->name('comment');
-    Route::get('/profile', [PostController::class, 'profile'])->name('profile');
+    Route::post('/comment/{id}', [PostController::class, 'comment'])->name('posts.comment');
+    Route::get('/profile', [PostController::class, 'profile'])->name('profile.show');
     Route::get('/edit/{post}', [PostController::class, 'edit'])->name('posts.edit');
-    Route::put('/update/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::put('/update/{post:slug}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/delete/{id}', [PostController::class, 'destroy'])->name('posts.delete');
     Route::patch('/submit/{post}', [PostController::class, 'submit'])->name('posts.submit');
 });
@@ -81,10 +80,24 @@ Route::middleware(['auth', 'can:manage-users'])->group(function () {
         $users = User::paginate(10);
         return view('manageusers', compact('users'));
     })->name('users.index');
-    Route::patch('/manageusers/{user}', [UserManagementController::class, 'toggle'])->name('users.toogle');
+    Route::patch('/manageusers/{user}', [UserManagementController::class, 'toggle'])->name('users.toggle');
+});
+Route::middleware(['auth', 'can:manage-permissions'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('/users', [App\Http\Controllers\Admin\PermissionController::class, 'users'])
+            ->name('users.index');
+
+        Route::get('/users/{user}/permissions', [App\Http\Controllers\Admin\PermissionController::class, 'edit'])
+            ->name('users.permissions.edit');
+        
+        Route::patch('/users/{user}/permissions', [App\Http\Controllers\Admin\PermissionController::class, 'update'])
+            ->name('users.permissions.update');
 });
 
-Route::middleware('can:manage-permissions')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/permissions',         [App\Http\Controllers\Admin\PermissionController::class, 'index'])->name('permissions.index');
-    Route::post('/permissions/{role}', [App\Http\Controllers\Admin\PermissionController::class, 'update'])->name('permissions.update');
+Route::get('/userpermission', function() {
+    $users = User::all();
+    return view('userpermission', compact('users'));
 });

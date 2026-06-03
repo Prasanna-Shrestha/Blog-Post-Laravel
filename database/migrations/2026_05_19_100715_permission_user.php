@@ -15,12 +15,7 @@ return new class extends Migration
         Schema::create('permission_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('permission_id')->constrained('permissions');
-            $table->enum('type',[
-                PermissionType::include->value,
-                PermissionType::exclude->value,
-            ])
-                ->default('include');
-            $table->primary(['permission_id', 'user_id']);
+            $table->primary(['user_id', 'permission_id']);
         });
     }
 

@@ -4,6 +4,9 @@
     </div>
         <div class="nav-right">
         @auth
+            <a href="{{ route('admin.users.index') }}" class="nav-btn">
+                Manage User Permissions
+            </a>
             @if(auth()->check() && auth()->user()->isAdmin())
                 <a href="/manageusers" class="nav-brand">Manage Users</a>
             @endcan
@@ -20,7 +23,7 @@
                     Sign out
                 </button>
             </form>
-            <a href="{{ route('profile') }}" class="nav-user">
+            <a href="{{ route('profile.show') }}" class="nav-user">
                 {{ auth()->user()->username }} Profile</a>
         @else
             <a href="{{ route('login') }}" class="nav-btn">Sign in</a>

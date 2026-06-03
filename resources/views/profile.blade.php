@@ -488,22 +488,22 @@
     {{-- ── Stats / tab selectors ───────────────────────── --}}
     <div class="stats-row">
         <a class="stat-card draft {{ request('tab', 'draft') === 'draft' ? 'active-tab' : '' }}"
-            href="{{ route('profile', ['tab' => 'draft']) }}">
+            href="{{ route('profile.show', ['tab' => 'draft']) }}">
             <div class="stat-number">{{ $counts['draft'] }}</div>
             <div class="stat-label">Drafts</div>
         </a>
         <a class="stat-card pending {{ request('tab', 'draft') === 'pending' ? 'active-tab' : '' }}"
-            href="{{ route('profile', ['tab' => 'pending']) }}">
+            href="{{ route('profile.show', ['tab' => 'pending']) }}">
             <div class="stat-number">{{ $counts['submitted'] }}</div>
             <div class="stat-label">Pending</div>
         </a>
         <a class="stat-card accepted {{ request('tab', 'draft') === 'accepted' ? 'active-tab' : '' }}"
-            href="{{ route('profile', ['tab' => 'accepted']) }}">
+            href="{{ route('profile.show', ['tab' => 'accepted']) }}">
             <div class="stat-number">{{ $counts['accepted'] }}</div>
             <div class="stat-label">Published</div>
         </a>
         <a class="stat-card rejected {{ request('tab', 'draft') === 'rejected' ? 'active-tab' : '' }}"
-            href="{{ route('profile', ['tab' => 'rejected']) }}">
+            href="{{ route('profile.show', ['tab' => 'rejected']) }}">
             <div class="stat-number">{{ $counts['rejected'] }}</div>
             <div class="stat-label">Rejected</div>
         </a>
