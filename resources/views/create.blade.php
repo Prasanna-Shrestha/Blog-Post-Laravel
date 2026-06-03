@@ -602,7 +602,7 @@
 
     <div class="form-card">
         <form
-            action="{{ $isEdit ? route('update', $post->slug) : route('store') }}"
+            action="{{ $isEdit ? route('posts.update', $post->slug) : route('posts.store') }}"
             method = "POST" 
             novalidate
             id="post-form"

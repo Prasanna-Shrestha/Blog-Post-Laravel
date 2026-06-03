@@ -208,7 +208,7 @@ class PostController extends Controller
 
         $message = "Edit";
 
-        return redirect()->route('show', $post->slug)
+        return redirect()->route('posts.show', $post->slug)
                         ->with('success', $message);
     }
 

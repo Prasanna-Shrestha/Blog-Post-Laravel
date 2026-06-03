@@ -471,7 +471,7 @@
                 @endforeach
             </div>
             <br>
-            <a href="{{ route('create') }}" class="nav-btn nav-btn-accent">
+            <a href="{{ route('posts.create') }}" class="nav-btn nav-btn-accent">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
@@ -528,7 +528,7 @@
                     <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v14a2 2 0 01-2 2z"/>
                     <polyline points="17 21 17 13 7 13 7 21"/>
                 </svg>
-                <p>No drafts yet. <a href="{{ route('create') }}">Start writing →</a></p>
+                <p>No drafts yet. <a href="{{ route('posts.create') }}">Start writing →</a></p>
             </div>
         @else
             <div class="post-list">
@@ -548,7 +548,7 @@
                         <div class="post-row-right">
                             <span class="status-pill status-draft">Draft</span>
                             <div class="row-actions">
-                                <a href="{{ route('edit', $post) }}" class="row-btn">
+                                <a href="{{ route('posts.edit', $post) }}" class="row-btn">
                                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
                                         <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -556,16 +556,16 @@
                                     Edit
                                 </a>
                                 {{-- Submit draft for review --}}
-                                <form method="POST" action="{{ route('submit', $post) }}" style="display:inline;">
+                                <form method="POST" action="{{ route('posts.submit', $post) }}" style="display:inline;">
                                     @csrf @method('PATCH')
                                     <input type="hidden" name="status" value="submitted">
-                                    <button type="submit" class="row-btn row-btn-submit"
+                                    <button type="posts.submit" class="row-btn row-btn-submit"
                                         onclick="return confirm('Submit this post for review?')">
                                         Submit
                                     </button>
                                 </form>
                                 {{-- Delete draft --}}
-                                <form method="POST" action="{{ route('delete', $post->id) }}" style="display:inline;">
+                                <form method="POST" action="{{ route('posts.delete', $post->id) }}" style="display:inline;">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="row-btn row-btn-danger"
                                         onclick="return confirm('Delete this draft permanently?')">
@@ -644,7 +644,7 @@
         @else
             <div class="post-list">
                 @foreach ($posts as $post)
-                    <a href="{{ route('show', $post->id) }}" class="post-row">
+                    <a href="{{ route('posts.show', $post->id) }}" class="post-row">
                         <div class="post-row-left">
                             <div class="post-row-title">{{ $post->title }}</div>
                             <div class="post-row-meta">
@@ -723,7 +723,7 @@
                             <span class="status-pill status-rejected">Rejected</span>
                             <div class="row-actions">
                                 {{-- Author can edit and re-submit --}}
-                                <a href="{{ route('edit', $post) }}" class="row-btn">Edit &amp; resubmit</a>
+                                <a href="{{ route('posts.edit', $post) }}" class="row-btn">Edit &amp; resubmit</a>
                             </div>
                         </div>
                     </div>

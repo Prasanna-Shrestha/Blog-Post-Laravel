@@ -316,7 +316,7 @@
 @foreach ($posts as $post)
 
 @can('view', $post)
-<a class="post-card" href="{{ route('show', $post->slug) }}">
+<a class="post-card" href="{{ route('posts.show', $post->slug) }}">
     <div class="post-card-top">
 
         {{-- Left --}}
@@ -347,13 +347,13 @@
 
             {{-- Actions --}}
             @can('update', $post)
-                <form action="{{ route('edit', $post) }}" method="get">
+                <form action="{{ route('posts.edit', $post) }}" method="get">
                     <button type="submit">Edit</button>
                 </form>
             @endcan
 
             @can('delete', $post)
-                <form action="{{ route('delete', $post->id) }}" method="POST">
+                <form action="{{ route('posts.delete', $post->id) }}" method="POST">
                     @csrf
                     @method('delete')
                     <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?')">
@@ -388,7 +388,7 @@
         <div class="post-right">
 
             @can('publish', $post)
-                <form action="{{ route('publish', $post) }}" method="post">
+                <form action="{{ route('posts.publish', $post) }}" method="post">
                     @csrf
                     @method('PATCH')
                     <input type="hidden" name="status" value="accepted">
@@ -397,7 +397,7 @@
             @endcan
 
             @can('reject', $post)
-                <form action="{{ route('reject', $post) }}" method="post">
+                <form action="{{ route('posts.reject', $post) }}" method="post">
                     @csrf
                     @method('patch')
                     <input type="hidden" name="status" value="rejected">

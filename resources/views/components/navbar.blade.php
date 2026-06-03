@@ -7,7 +7,7 @@
             @if(auth()->check() && auth()->user()->isAdmin())
                 <a href="/manageusers" class="nav-brand">Manage Users</a>
             @endcan
-            <a href="{{ route('create') }}" class="nav-btn">
+            <a href="{{ route('posts.create') }}" class="nav-btn">
                 Create
             </a>
             <span class="nav-user">Signed in as <strong>{{ auth()->user()->username }}</strong></span>

@@ -673,7 +673,7 @@
                             @else
                                 <form
                                     method="POST"
-                                    action="{{ route('manageuser', $user) }}"
+                                    action="{{ route('users.toogle', $user) }}"
                                     class="toggle-form"
                                     onsubmit="return confirm(
                                         '{{ $user->is_active

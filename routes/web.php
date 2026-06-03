@@ -45,7 +45,7 @@ Route::get('/', [PostController::class, 'index'])->name('home');
 
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::get('/show/{id}', [PostController::class, 'show'])->name('show')
+Route::get('/show/{id}', [PostController::class, 'show'])->name('posts.show')
     ->middleware('log.requests');
 
 Route::post('/register', [AuthController::class, 'registerUser'])
@@ -64,24 +64,24 @@ Route::get('lifecycle-test', function(){
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/create', [PostController::class, 'create'])->name('create');
-    Route::post('/store', [PostController::class, 'store'])->name('store');
+    Route::get('/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/store', [PostController::class, 'store'])->name('posts.store');
     Route::post('/comment/{id}', [PostController::class, 'comment'])->name('comment');
     Route::get('/profile', [PostController::class, 'profile'])->name('profile');
-    Route::get('/edit/{post}', [PostController::class, 'edit'])->name('edit');
-    Route::put('/update/{post}', [PostController::class, 'update'])->name('update');
-    Route::delete('/delete/{id}', [PostController::class, 'destroy'])->name('delete');
-    Route::patch('/submit/{post}', [PostController::class, 'submit'])->name('submit');
+    Route::get('/edit/{post}', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/update/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/delete/{id}', [PostController::class, 'destroy'])->name('posts.delete');
+    Route::patch('/submit/{post}', [PostController::class, 'submit'])->name('posts.submit');
 });
 
 Route::middleware(['auth', 'can:manage-users'])->group(function () {
-    Route::patch('/publish/{post}', [PostController::class, 'publish'])->name('publish');
-    Route::patch('/reject/{post}', [PostController::class, 'reject'])->name('reject');
+    Route::patch('/publish/{post}', [PostController::class, 'publish'])->name('posts.publish');
+    Route::patch('/reject/{post}', [PostController::class, 'reject'])->name('posts.reject');
     Route::get('/manageusers', function() {
         $users = User::paginate(10);
         return view('manageusers', compact('users'));
-    })->name('manageusers');
-    Route::patch('/manageusers/{user}', [UserManagementController::class, 'toggle'])->name('manageuser');
+    })->name('users.index');
+    Route::patch('/manageusers/{user}', [UserManagementController::class, 'toggle'])->name('users.toogle');
 });
 
 Route::middleware('can:manage-permissions')->prefix('admin')->name('admin.')->group(function () {
