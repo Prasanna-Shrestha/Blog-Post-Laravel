@@ -381,7 +381,18 @@
             <strong>{{ $post->comments_count }}</strong>
             {{ Str::plural('comment', $post->comments_count) }}
         </span>
+        <svg class="comment-count-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+
+        <span class="comment-count">
+            <strong>{{ $post->views }}</strong>
+            {{ Str::plural('view', $post->views) }}
+        </span>
+
     </div>
+    
 
     {{-- Admin actions --}}
     @if (auth()->check())

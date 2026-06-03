@@ -49,5 +49,9 @@ class Post extends Model
     {
         return $this->morphMany(Status::class, 'statusable');
     }
+
+    public function views(){
+        return $this->hasMany(PostView::class);
+    }
     
 }

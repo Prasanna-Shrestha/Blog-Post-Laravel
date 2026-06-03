@@ -14,13 +14,14 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Models\UserIsActive;
-
+use Illuminate\Support\Facades\Cookie;
 use function Laravel\Prompts\error;
+use App\Models\PostView;
 
 class PostController extends Controller
 {
     public function index()
-    {        
+    {
         $posts = Post::with(['user.roles', 'categories'])
             ->withCount('comments')
             ->latest()
@@ -94,6 +95,7 @@ class PostController extends Controller
     public function show($slug){
         $post = Post::with(['user', 'categories', 'comments.user'])
             ->where('slug', $slug)->first();    
+        $this->recordView($post);
         return view('show', compact('post'));
     }
 
@@ -268,4 +270,43 @@ class PostController extends Controller
 
         return redirect()->back()->with('success', 'Status updated successfully!');
     }
+
+    private function recordView(Post $post)
+    {
+        if (auth()->check()) {
+
+            $exists = PostView::where('post_id', $post->id)
+                ->where('user_id', auth()->id())
+                ->exists();
+
+            if (!$exists) {
+                PostView::create([
+                    'post_id' => $post->id,
+                    'user_id' => auth()->id(),
+                ]);
+                $post->increment('views');
+            }
+
+        } else {
+            $token = Cookie::get('visitor_token');
+            if (!$token) {
+                $token = Str::uuid()->toString();
+                Cookie::queue(
+                    'visitor_token',
+                    $token,
+                    60 * 24 * 365
+                );
+            }
+            $exists = PostView::where('post_id', $post->id)
+                ->where('visitor_token', $token)
+                ->exists();
+            if (!$exists) {
+                PostView::create([
+                    'post_id' => $post->id,
+                    'visitor_token' => $token,
+                ]);
+                $post->increment('views');
+            }
+        }
+}
 }

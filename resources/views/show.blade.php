@@ -418,6 +418,13 @@
 
     <div class="divider"></div>
 
+    <div class="comments-header">
+        <h2 class="comments-title">Views</h2>
+        <span class="comments-count-badge">{{ $post->views }}</span>
+    </div>
+
+    <div class="divider"></div>
+
     {{-- Comments --}}
     <div class="comments-header">
         <h2 class="comments-title">Comments</h2>

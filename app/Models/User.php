@@ -97,4 +97,7 @@ class User extends Authenticatable
     {
         return $this->activeStatus?->is_active ?? true;
     }
+    public function viewedPosts(){
+        return $this->hasMany(PostView::class);
+    }
 }
