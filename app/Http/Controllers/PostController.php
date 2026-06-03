@@ -6,11 +6,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\PostStatus;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostRequest;
+use App\Models\UserIsActive;
 
 use function Laravel\Prompts\error;
 
@@ -33,15 +36,7 @@ class PostController extends Controller
         return view('create', compact('categories'));
     }
 
-    public function store(Request $request){
-        $request->validate([
-            'title' => 'required|string|max:50',
-            'body'  => 'required|string|max:500',
-            'action' => 'required|in:draft,submitted',
-            'categories' => 'nullable|array',
-            'categories.*' => 'integer|exists:categories,id',
-            'new_categories' => 'nullable|string|max:255',
-        ]);
+    public function store(PostRequest $request){
         $id = Auth::id();
         $status = $request['action'] === 'submitted'
         ? PostStatus::submitted
@@ -92,14 +87,13 @@ class PostController extends Controller
         $message = $status === PostStatus::submitted
             ? 'Post submitted for review.'
             : 'Draft saved.';
-
-        return redirect()->route('show', $post->id)
-                        ->with('success', 'Post published.');
+    
+        return view('show', compact('post'))->with('status', 'Post created successfully');
     }
 
-    public function show($id){
+    public function show($slug){
         $post = Post::with(['user', 'categories', 'comments.user'])
-            ->findOrFail($id);    
+            ->where('slug', $slug)->first();    
         return view('show', compact('post'));
     }
 
@@ -214,7 +208,7 @@ class PostController extends Controller
 
         $message = "Edit";
 
-        return redirect()->route('show', $post->id)
+        return redirect()->route('show', $post->slug)
                         ->with('success', $message);
     }
 
@@ -231,7 +225,7 @@ class PostController extends Controller
         $post->comments()->delete();
         $post->statuses()->delete();
         $post->delete();
-        return redirect()->route('home')->with('success', 'Post deleted.');
+        return redirect()->route('home')->with('status', 'Post deleted');
     }
 
     public function publish(Request $request, Post $post){

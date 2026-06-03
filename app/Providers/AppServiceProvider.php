@@ -20,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
                     return $user->hasPermission($permission->name);
                 });
             });
+            Gate::define('manage-users', function ($user){
+                return $user->isAdmin();
+            });
         } catch (\Exception $e) {
             // Silently fail during migrations / before DB is ready
         }  

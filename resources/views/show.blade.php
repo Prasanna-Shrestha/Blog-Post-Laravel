@@ -378,6 +378,9 @@
 {{-- Navigation --}}
 <x-navbar />
 
+@if (session('status'))
+    <div class="alert-success"> {{session('status')}}</div>
+@endif
 {{-- Main --}}
 <div class="container">
 

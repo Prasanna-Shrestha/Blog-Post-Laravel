@@ -270,6 +270,9 @@
     @if (session('status'))
         <div class="alert-success">{{ session('status') }}</div>
     @endif
+    @if (session('error-alert'))
+        <div class="alert-error">{{ session('error-alert') }}</div>
+    @endif
 
     <form method="POST" action="{{ route('login') }}" novalidate>
         @csrf

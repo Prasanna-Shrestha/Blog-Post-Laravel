@@ -10,6 +10,8 @@ use App\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Role;
+use App\Models\UserIsActive;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -37,13 +39,21 @@ class AuthController extends Controller
             "email" => $request->email,
             "password" => Hash::make($request->password)
         ]);
-
+        UserIsActive::create([
+            'user_id' => $user->id,
+            'is_active' => true
+        ]);
         $role = Role::where('name', $roleName)->first();
         $user->roles()->attach($role->id);
         Auth::login($user);
         session([
                 'id' => $request->id,
                 'username' => $request->username
+        ]);
+        Log::channel('login_activity')->info('User Login Activity',[
+            'user_id' => $user->id,
+            'user_name' => $user->username,
+            'timestamp' => now()->toDateTimeString(),
         ]);
         return redirect()->route('home');
 
@@ -59,6 +69,11 @@ class AuthController extends Controller
             session([
                 'id' => $request->id,
                 'username' => $request->username
+            ]);
+            Log::channel('login_activity')->info('User Login Activity',[
+                'user_id' => $user->id,
+                'user_name' => $user->username,
+                'timestamp' => now()->toDateTimeString()
             ]);
             return redirect()->route('home');
         }

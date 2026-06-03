@@ -51,7 +51,12 @@ return [
     */
 
     'channels' => [
-
+        'login_activity' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/login_activity.log'),
+            'level' => 'info',
+        ],
+        
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),

@@ -3,7 +3,10 @@
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 use App\Http\Controllers\Api\PostExportController;
+use App\Http\Controllers\UserManagementController;
+use App\Models\UserIsActive;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -42,14 +45,23 @@ Route::get('/', [PostController::class, 'index'])->name('home');
 
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::get('/show/{id}', [PostController::class, 'show'])->name('show');
+Route::get('/show/{id}', [PostController::class, 'show'])->name('show')
+    ->middleware('log.requests');
 
-Route::post('/register', [AuthController::class, 'registerUser'])->name('registerUser');
-Route::post('/login', [AuthController::class, 'loginUser'])->name('loginUser');
+Route::post('/register', [AuthController::class, 'registerUser'])
+    ->name('registerUser');
+Route::post('/login', [AuthController::class, 'loginUser'])
+    ->name('loginUser');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/forgotpassword', [AuthController::class, 'forgotpw'])->name('forgotpw');
 Route::post('/resetpw', [AuthController::class, 'resetpw'])->name('resetpw');
 
+Route::get('lifecycle-test', function(){
+    return response()->json([
+        "Php version: " => phpversion(),
+        "Current time: " => now()->toDateTimeString()
+    ]);
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', [PostController::class, 'create'])->name('create');
@@ -59,9 +71,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/edit/{post}', [PostController::class, 'edit'])->name('edit');
     Route::put('/update/{post}', [PostController::class, 'update'])->name('update');
     Route::delete('/delete/{id}', [PostController::class, 'destroy'])->name('delete');
-    Route::patch('/publish/{post}', [PostController::class, 'publish'])->name('publish');
     Route::patch('/submit/{post}', [PostController::class, 'submit'])->name('submit');
+});
+
+Route::middleware(['auth', 'can:manage-users'])->group(function () {
+    Route::patch('/publish/{post}', [PostController::class, 'publish'])->name('publish');
     Route::patch('/reject/{post}', [PostController::class, 'reject'])->name('reject');
+    Route::get('/manageusers', function() {
+        $users = User::paginate(10);
+        return view('manageusers', compact('users'));
+    })->name('manageusers');
+    Route::patch('/manageusers/{user}', [UserManagementController::class, 'toggle'])->name('manageuser');
 });
 
 Route::middleware('can:manage-permissions')->prefix('admin')->name('admin.')->group(function () {

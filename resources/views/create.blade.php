@@ -583,7 +583,9 @@
 
 {{-- ── Navigation ───────────────────────────────────────── --}}
 <x-navbar />
-
+@if (session('status'))
+    <div class="alert-success"> {{session('status')}}</div>
+@endif
 {{-- ── Main ─────────────────────────────────────────────── --}}
 <div class="container">
 
@@ -600,7 +602,7 @@
 
     <div class="form-card">
         <form
-            action="{{ $isEdit ? route('update', $post) : route('store') }}"
+            action="{{ $isEdit ? route('update', $post->slug) : route('store') }}"
             method = "POST" 
             novalidate
             id="post-form"
@@ -619,7 +621,6 @@
                     name="title"
                     value="{{ old('title', $post->title ?? '') }}"
                     placeholder="Give your post a clear, descriptive title"
-                    maxlength="255"
                     class="{{ $errors->has('title') ? 'error' : '' }}"
                     required
                     autofocus
@@ -663,6 +664,9 @@
                             @endforeach
                         </select>
                     @endif
+                    @error('categories')
+                        <div class="field-error">{{ $message }}</div>
+                    @enderror
 
                     <input
                         type="text"
@@ -670,6 +674,9 @@
                         class="tag-text-input"
                         placeholder="{{ $categories->isNotEmpty() ? 'Or type new categories (comma separated)…' : 'Type categories (comma separated)…' }}"
                     >
+                    @error('new_categories')
+                        <div class="field-error">{{ $message }}</div>
+                    @enderror
 
                 @endisset
 

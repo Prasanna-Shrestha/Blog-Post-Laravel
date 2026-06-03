@@ -1,7 +1,12 @@
 <nav>
-    <a href="{{ route('home') }}" class="nav-brand">Forum</a>
-    <div class="nav-right">
+    <div>
+        <a href="{{ route('home') }}" class="nav-brand">Forum</a>
+    </div>
+        <div class="nav-right">
         @auth
+            @if(auth()->check() && auth()->user()->isAdmin())
+                <a href="/manageusers" class="nav-brand">Manage Users</a>
+            @endcan
             <a href="{{ route('create') }}" class="nav-btn">
                 Create
             </a>

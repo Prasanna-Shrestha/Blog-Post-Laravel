@@ -6,10 +6,12 @@ namespace App\Models;
 
 use App\UserRole;
 use Database\Factories\UserFactory;
+use App\Models\UserIsActive;
 use Dom\Comment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -59,6 +61,10 @@ class User extends Authenticatable
         return $this->hasMany(Status::class);
     }
 
+    public function activeStatus(): HasOne {
+        return $this->hasOne(UserIsActive::class);
+    }
+
     protected function casts(): array
     {
         return [
@@ -82,5 +88,9 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->roles()->where('name', 'admin')->exists();
+    }
+    public function getIsActiveAttribute(): bool
+    {
+        return $this->activeStatus?->is_active ?? true;
     }
 }

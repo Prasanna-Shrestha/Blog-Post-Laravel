@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Post;
+use Illuminate\Support\Str;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,9 +22,13 @@ class PostSeeder extends Seeder
         foreach($users as $user){
             $post1 = Post::create([
                 'title'=>"Blog Test: { $user->id }",
-                'slug'=>'blog-test',
+                'slug'=>'',
                 'body'=>"This first post has been created from seeder by user : {$user->username}",
                 'user_id'=>$user->id
+            ]);
+            $slug = Str::slug($post1->title) . '-' . $post1->id;
+            $post1->update([
+                "slug" => $slug
             ]);
 
             $post2 = Post::create([
@@ -31,6 +36,10 @@ class PostSeeder extends Seeder
                 'slug'=>'blog-test',
                 'body'=>"This second post has been created from seeder by user : {$user->username}",
                 'user_id'=>$user->id
+            ]);
+            $slug = Str::slug($post2->title) . '-' . $post2->id;
+            $post1->update([
+                "slug" => $slug
             ]);
         };
     }

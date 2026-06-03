@@ -310,12 +310,13 @@
         </div>
     @else
 <div class="post-list">
+@if (session('status'))
+    <div class="alert-success">{{ session('status') }}</div>
+@endif
 @foreach ($posts as $post)
 
 @can('view', $post)
-
-<a class="post-card" href="{{ route('show', $post->id) }}">
-
+<a class="post-card" href="{{ route('show', $post->slug) }}">
     <div class="post-card-top">
 
         {{-- Left --}}
