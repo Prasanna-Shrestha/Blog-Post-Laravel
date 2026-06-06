@@ -613,29 +613,20 @@
 
                 <tbody>
                     @foreach ($permissions as $permission)
-                        <tr>
-                            <td>
-                                <div class="user-name">
-                                    {{ $permission->label }}
-                                </div>
-
-                                @if(in_array($permission->id, $rolePermissions))
-                                    <div class="user-email">
-                                        Granted through role
-                                    </div>
-                                @endif
-                            </td>
-
-                            <td class="right">
-                                <input
-                                    type="checkbox"
-                                    name="permissions[]"
-                                    value="{{ $permission->id }}"
-                                    {{ in_array($permission->id, $userPermissions) ? 'checked' : '' }}
-                                >
-                            </td>
-                        </tr>
-                    @endforeach
+                    <tr>
+                        <td>
+                            <div class="user-name">{{ $permission->label }}</div>
+                        </td>
+                        <td class="right">
+                            <input
+                                type="checkbox"
+                                name="permissions[]"
+                                value="{{ $permission->id }}"
+                                {{ in_array($permission->id, $userPermissions) ? 'checked' : '' }}
+                            >
+                        </td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
 

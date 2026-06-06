@@ -19,17 +19,12 @@ class PermissionController extends Controller
     public function edit(User $user)
     {
         $permissions        = Permission::orderBy('name')->get();
-        $userPermissions    = $user->permissions->pluck('id')->toArray();  // currently assigned
-        $rolePermissions    = $user->roles
-                                ->flatMap(fn($r) => $r->permissions)
-                                ->pluck('id')
-                                ->toArray();  // inherited from role
+        $userPermissions    = $user->permissions->pluck('id')->toArray();
 
         return view('userpermissionedit', compact(
             'user',
             'permissions',
             'userPermissions',
-            'rolePermissions'
         ));
     }
 

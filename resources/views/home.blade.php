@@ -300,7 +300,6 @@
         <h1 class="page-title">All Posts</h1>
         <span class="page-count">{{ $posts->total() }} {{ Str::plural('post', $posts->total()) }}</span>
     </div>
-
     @if ($posts->isEmpty())
         <div class="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -390,6 +389,12 @@
             <strong>{{ $post->views }}</strong>
             {{ Str::plural('view', $post->views) }}
         </span>
+
+        @if(  $post->current_status->value == "draft")
+            DRAFT POST
+        @elseif ($post->current_status->value == "submitted")
+            SUBMITTED FOR REVIEW
+        @endif
 
     </div>
     

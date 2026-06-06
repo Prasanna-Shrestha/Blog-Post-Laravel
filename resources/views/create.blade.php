@@ -693,11 +693,15 @@
                     placeholder="Write your post here…"
                     maxlength="20000"
                     class="{{ $errors->has('body') ? 'error' : '' }}"
+                    oninput="updateBodyCount(this)"
                     required
                 >{{ old('body', $post->body ?? '') }}</textarea>
                 @error('body')
                     <div class="field-error">{{ $message }}</div>
                 @enderror
+                <div class="field-footer">
+                    <span class="char-count" id="char-body-count">0 / 1000</span>
+                </div>
             </div>
 
 
@@ -759,5 +763,14 @@
     document.getElementById('post-form').addEventListener('submit', function () {
         const btn = document.getElementById('submit-btn'); 
     });
+
+    function updateBodyCount(el) {
+        document.getElementById('char-body-count').textContent = el.value.length + ' / 1000';
+    }
+
+    // Initialize if old() value exists
+    const ta = document.getElementById('body');
+    if (ta) updateBodyCount(ta);
+
 </script>
 </html>

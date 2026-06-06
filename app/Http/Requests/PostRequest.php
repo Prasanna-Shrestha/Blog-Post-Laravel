@@ -43,7 +43,7 @@ class PostRequest extends FormRequest
             'body.required' => 'Please write some content for your post.',
             'body.string' => 'The post content must be valid text.',
             'body.min' => 'The post content must be at least 100 characters long.',
-            'body.max' => 'The post content cannot exceed 500 characters.',
+            'body.max' => 'The post content cannot exceed 1000 characters.',
 
             'action.required' => 'Please choose whether to save as a draft or submit for review.',
             'action.in' => 'The selected action is invalid.',

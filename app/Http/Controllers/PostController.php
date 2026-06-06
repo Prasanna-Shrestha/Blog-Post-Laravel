@@ -22,7 +22,15 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::with(['user.roles', 'categories'])
+        $user = auth()->user();
+        if(!$user){
+            $query = Post::where('current_status', 'accepted');
+        } else {
+            $query = Post::where('current_status', PostStatus::accepted->value)
+                     ->orWhere('user_id', $user->id);
+        }
+
+        $posts = $query->with(['user.roles', 'categories'])
             ->withCount('comments')
             ->latest()
             ->paginate(8);
@@ -38,6 +46,7 @@ class PostController extends Controller
     }
 
     public function store(PostRequest $request){
+        $request->validated();
         $id = Auth::id();
         $status = $request['action'] === 'submitted'
         ? PostStatus::submitted
@@ -150,11 +159,8 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        // Must have edit-any OR (edit-own AND it's their post)
-        if (!Gate::allows('edit-any-post')) {
-            if (!Gate::allows('edit-own-post') || $post->user_id !== Auth::id()) {
-                abort(403);
-            }
+        if (!Gate::allows('edit-own-post') || $post->user_id !== Auth::id()) {
+            abort(403);
         }
         $categories = Category::all();
         return view('create', compact('categories', 'post'));
@@ -217,13 +223,14 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
-
-        if (!Gate::allows('delete-any-post')) {
+        $user = User::findOrFail(Auth::id());
+        if(! $user->isAdmin()){
             if (!Gate::allows('delete-own-post') || $post->user_id !== Auth::id()) {
                 abort(403);
             }
         }
         $post->categories()->detach();
+        $post->views()->delete();
         $post->comments()->delete();
         $post->statuses()->delete();
         $post->delete();

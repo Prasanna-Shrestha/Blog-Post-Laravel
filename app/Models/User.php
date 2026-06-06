@@ -75,15 +75,9 @@ class User extends Authenticatable
     }
     public function hasPermission(string $permission): bool
     {
-        if ($this->permissions->isNotEmpty()) {
-            return $this->permissions
-                ->pluck('name')
-                ->contains($permission);
-        }
-        return $this->roles
-            ->flatMap(fn($role) => $role->permissions)
-            ->pluck('name')
-            ->contains($permission);
+        return $this->permissions()
+            ->where('name', $permission)
+            ->exists();
     }
     public function hasRole(string $role): bool
     {
